@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/sauraby46/DevTinder#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.1.2"
   }
 }
