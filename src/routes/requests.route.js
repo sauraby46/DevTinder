@@ -43,12 +43,12 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
         status
       });
 
-      await newConnectionRequest.save();
+      const data = await newConnectionRequest.save();
 
       res.json({
         message: 
           `Connection request sent from user ${fromUserId} to user ${toUserId} with status ${status}`,
-        data: newConnectionRequest
+        data,
       });
     
     } catch (error) {
@@ -56,5 +56,45 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
     }
 
 }) ;
+
+requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, res) => {
+  
+    try{
+
+      const loggedInUser = req.user;
+      const {status, requestId} = req.params;
+
+      const allowedStatus = ["accepted", "rejected"];
+      if(!allowedStatus.includes(status)){
+        return res
+          .status(400)
+          .json({ message: `Status ${status} is not supported` });
+      }
+
+      const existingConnectionRequest = await connectionRequest.findOne({
+        _id: requestId,
+        toUserId: loggedInUser._id,
+        status: "interested"
+      });
+
+      if(!existingConnectionRequest){
+        return res
+          .status(404)
+          .json({ message: "No pending connection request found to review" });
+      }
+
+      existingConnectionRequest.status = status;
+
+      const data = await existingConnectionRequest.save();
+
+      res.json({
+        message: `Connection request ${requestId} has been ${status}`,
+        data
+      });
+
+    }catch(error){
+      res.status(500).send("Error reviewing connection request: " + error);
+    }
+});
 
 module.exports = requestRouter;

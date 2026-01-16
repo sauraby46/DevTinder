@@ -27,16 +27,16 @@ const connectionRequestSchema = new mongoose.Schema({
      timestamps: true 
 });
 
-connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true });
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
 
-connectionRequestSchema.pre("save", function(next){
-    const connectionRequest = this;
-
-    if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)){
-        return next(new Error("Cannot send connection request to yourself"));
-    }
-    next();
+connectionRequestSchema.pre("save", async function () {
+  if (this.fromUserId.equals(this.toUserId)) {
+    throw new Error("fromUserId and toUserId cannot be the same");
+  }
 });
 
+
+
 const ConnectionRequestModel = new mongoose.model('ConnectionRequest', connectionRequestSchema);
+        
 module.exports = ConnectionRequestModel;

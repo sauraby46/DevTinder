@@ -17,6 +17,8 @@ const userAuth = async (req, res, next) => {
             if(!user){
                 return res.status(401).send("Unauthorized: User not found");
             }
+            req.user = user;
+
             next();
     } catch(err){
         res.status(401).send("Unauthorized: Invalid token" + err);

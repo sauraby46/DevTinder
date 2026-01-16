@@ -1,5 +1,5 @@
 const express = require('express'); 
-const { userAuth } = require('../middlewares/auth.js');
+const userAuth = require('../middlewares/auth.js');
 const { validateEditProfileData } = require("../utils/validation.js");
 
 
@@ -11,7 +11,10 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     try{
         
         const user = req.user;
-        res.send(user);
+        res.json({ 
+            message: "Profile fetched successfully",
+            data: user 
+        });
 
     }catch(err){
         res.status(500).send("Error fetching profile"+ err);

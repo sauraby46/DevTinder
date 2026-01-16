@@ -50,7 +50,6 @@ authRouter.post("/login", async (req, res) => {
         if(isPasswordValid){
 
             const token = await user.getJWT();
-            console.log("Generated Token:", token);
 
 
             res.cookie("token", token, { httpOnly: true });
