@@ -33,8 +33,29 @@ const userSchema = new mongoose.Schema({
         type: Number
     },
     gender: {
-        type: String
+        type: String,
+        enum: {
+            values: ["male", "female", "other"],
+            message: `{VALUE} is not a valid gender type`,
+        }
+    },
+    skills: {
+      type: [String],
+    },
+    about: {
+      type: String,
+      default: "This is a default about of the user!",
+    },
+    photoUrl: {
+      type: String,
+      default: "https://geographyandyou.com/images/user-profile.png",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid Photo URL: " + value);
+        }
+      }
     }
+
 }, { timestamps: true });
 
 userSchema.methods.getJWT = async function(){
